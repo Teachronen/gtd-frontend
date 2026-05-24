@@ -7,6 +7,7 @@ import {
   getNextInboxItem,
   getPeople,
   processInboxItem,
+  type InboxDecision,
 } from "@/lib/api";
 
 type InboxItem = {
@@ -136,7 +137,7 @@ if (peopleResult.length > 0) {
     loadInitialData();
   }, []);
 
-  async function saveDecision(decision: Record<string, unknown>) {
+  async function saveDecision(decision: InboxDecision) {
     if (!item) return;
 
     try {
