@@ -391,6 +391,31 @@ function buildUrl(
   return url.toString();
 }
 
+export function getAccessToken(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return localStorage.getItem("access");
+}
+
+export function getRefreshToken(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return localStorage.getItem("refresh");
+}
+
+export function clearTokens(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+}
+
 function getCookie(name: string): string | null {
   if (typeof document === "undefined") {
     return null;
@@ -431,9 +456,14 @@ async function apiRequest<T>(
 ): Promise<T> {
   const method = options.method || "GET";
   const csrfToken = getCookie("csrftoken");
+  const accessToken = getAccessToken();
   const hasBody = options.body !== undefined;
 
   const headers: Record<string, string> = {};
+
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`;
+  }
 
   if (hasBody) {
     headers["Content-Type"] = "application/json";
